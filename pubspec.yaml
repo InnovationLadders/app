@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  flutter_inappwebview: ^5.7.2+3
+  flutter_inappwebview: ^6.0.0
   internet_connection_checker: ^1.0.0+1
   permission_handler: ^11.0.1 # For handling webview permissions like camera/microphone
 

@@ -119,7 +119,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void dispose() {
     _listener.cancel();
     webViewController = null; // Clean up webViewController reference
-    pullToRefreshController?.dispose(); // Dispose controller
     super.dispose();
   }
 
@@ -210,7 +209,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                           progress = p / 100;
                         });
                       },
-                      onReceivedError: (controller, request, error) {
+                      onLoadError: (controller, url, code, message) {
                         pullToRefreshController?.endRefreshing();
                         // Handle specific error types, e.g., show a dedicated error page
                         // For now, if no internet, the _isConnected check handles it.
