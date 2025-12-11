@@ -13,14 +13,11 @@ void main() async {
 
   // For Android, ensure Hybrid Composition is enabled
   if (Platform.isAndroid) {
-    await AndroidInAppWebViewController.set        
-    setWebContentsDebuggingEnabled(true);
-    var swAvailable = await AndroidWebViewFeature.is                      
-    is        AndroidWebViewFeatureAvailable(AndroidWebViewFeature.SERVICE_WORKER_BASIC_USAGE);
-    var swReady = await AndroidWebViewFeature.is        
-    is        AndroidWebViewFeatureAvailable(AndroidWebViewFeature.SERVICE_WORKER_CACHE_MODE);
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+    var swAvailable = await AndroidWebViewFeature.isFeatureSupported(AndroidWebViewFeature.SERVICE_WORKER_BASIC_USAGE);
+    var swReady = await AndroidWebViewFeature.isFeatureSupported(AndroidWebViewFeature.SERVICE_WORKER_CACHE_MODE);
     if (swAvailable && swReady) {
-      AndroidServiceWorkerController.instance.setServiceWorkerClient(AndroidServiceWorkerClient(
+      AndroidServiceWorkerController.instance().setServiceWorkerClient(AndroidServiceWorkerClient(
         shouldInterceptRequest: (request) async {
           return null;
         },
@@ -87,9 +84,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   void _initConnectivityListener() {
-    InternetConnectionChecker().checkConnectivity().then((status) {
+    InternetConnectionChecker().hasConnection.then((hasConnection) {
       setState(() {
-        _isConnected = status != InternetConnectionStatus.disconnected;
+        _isConnected = hasConnection;
       });
     });
     _listener = InternetConnectionChecker().onStatusChange.listen((status) {
@@ -148,8 +145,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        final shouldPop = await _onWillPop();
+        if (shouldPop && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('WebViewApp2'),

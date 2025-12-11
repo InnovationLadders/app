@@ -15,12 +15,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
+    <!-- Allow HTTP traffic (recommended for webview compatibility) -->
     <application
         android:label="WebViewApp2"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true"  <!-- Allow HTTP traffic (recommended for webview compatibility) -->
-        >
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
